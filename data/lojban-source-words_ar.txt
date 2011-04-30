@@ -1,8 +1,8 @@
-bacru	utter	nabas	نبس	nabasa	utter	
+bacru	utter	nabas	نبس	nabas	utter
 badna	banana	muz	موز	mūz	banana
 badri	sad	xazin	حزين	ḥazīn	sad
 bajra	run	jara	جرى	jarā	run
-bakfu	bundle	rabat	ربط	rabaṭa	bind	cf. ربطة [rabṭa] ``bundle''
+bakfu	bundle	rabat	ربط	rabaṭ	bind	cf. ربطة [rabṭa] ``bundle''
 bakni	bovine	bakar	بقرة	baqara	cow
 bakri	chalk	tabacir	ظباشير	tabāšīr	chalk
 baktu	bucket	dal	دلو	dalw	bucket	correct transcription ``dalu''
@@ -12,62 +12,62 @@ balni	balcony	curfa	شرفة	šurfa	balcony
 balre	blade	cafr	شفرة	šafra	blade
 balvi	future	mukbil	هقبل	muqbil	future
 bancu	beyond	bada	بعر	baʿda	after
-bandu	defend	sana
+bandu	defend	sana	صان	ṣāna	protect
 banfi	amphibian	barmai	برمائي	barmāʾī	amphibious
 bangu	language	lisan	لسان	lisān	language
 banli	great	bariz	بارز	bāriz	great
-banro	grow	nabat	نبت	nabata	grow
+banro	grow	nabat	نبت	nabat	grow
 banxa	bank	bank	بنك	bank	bank
 banzu	suffice	kaf	كفى	kafā	suffice
-bapli	force	ajbar	أخبر	ʾājbara	compell
+bapli	force	ajbar	أخبر	ʾajbara	compell
 barda	big	kabir	كبير	kabīr	big
 bargu	arch	dira	ذراع	dirāʿ	arm
 bargu	arch	kaus	قوس	qaus	arch
 barja	bar	bar	بار	bār	bar
-barna	mark	atar	أثر	ʾāṯar	trace
+barna	mark	atar	أثر	ʾaṯar	trace
 bartu	out	xarij	خارج	ẖārij	outside
 basna	emphasize	nabara	نبر	nabara	emphasize
 basti	replace	badal	بدل	badal	replacement
-batci	bite	kasam
-batke	button	zir
-bavmi	barley	cair
-bebna	foolish	abla	أبله	ʾāblah	foolish
-bende	orchestra	jauka
-benji	send	arsal
-benji	send	arsala
-benji	send	baata
-bersa	son	ibn
-bersa	son	najl
-berti	north	camal
-berti	north	cimal
-besna	brain	dimag
-besna	brain	muj
+batci	bite	kasam	قرم	qaram	gnaw	correct transcription ``karam''
+batke	button	zir	زر	zirr	button
+bavmi	barley	cair	شعير	šaʿīr	barley
+bebna	foolish	abla	أبله	ʾablah	foolish
+bende	orchestra	jauka	خوقة	jauqa	orchestra
+benji	send	arsal	أرسل	ʾarsal	send
+benji	send	arsala	أرسل	ʾarsala	send
+benji	send	baata	بعث	baʿaṯa	send
+bersa	son	ibn	ابن	ibn	son
+bersa	son	najl	نجل	najl	descendant
+berti	north	camal	شمال	šamāl	north
+berti	north	cimal	شمال	šimāl	north
+besna	brain	dimag	دماغ	dimāġ	brain
+besna	brain	muj	مخ	muẖẖ	brain	correct transcription ``muxx''
 betfu	abdomen	batn	بطن	baṭn	belly
 betri	tragedy	trajidi	تراجيديا	trājīdīā	tragedy
-bevri	carry	xamal
-bidju	bead	xaraz
-bifce	bee	naxla
-bikla	whip	kirbaj
-bikla	whip	saut
-bilga	obliged	alzam	ألزم	ʾālzama	oblige
-bilma	ill	alil	أليم	ʾālīm	painful	FIXIT dubious; correct transcription ``alim''
-bilni	military	askari
+bevri	carry	xamal	حمل	ḥamal	carry
+bidju	bead	xaraz	خرز	ẖaraz	beads
+bifce	bee	naxla	نحلة	naḥla	bee
+bikla	whip	kirbaj	كرباج	kurbāj	whip	correct transcription ``kurbaj''
+bikla	whip	saut	سوط	sauṭ	whip
+bilga	obliged	alzam	ألزم	ʾalzama	oblige
+bilma	ill	alil	أليم	ʾalīm	painful	FIXIT dubious; correct transcription ``alim''
+bilni	military	askari	عسكرى	askarī	military
 binra	insure	tamin	تامين	tāmīn	insurance
-binxo	become	inkalab	انقلب	inqalaba	change
+binxo	become	inkalab	انقلب	inqalab	change
 birje	beer	bir	بيرة	bīra	beer
 birka	arm	dira	ذراع	dirāʿ	arm
 birti	certain	tabit	ثابت	ṯābit	certain
 bisli	ice	jalid	جليد	jalīd	ice
 bitmu	wall	xait	حايط	ẖāīṭ	wall
-blabi	white	abiad	أبيض	ʾābyaḍ	white
-blaci	glass	zujaj
-blanu	blue	azrak	أزرق	ʾāzraq	blue
+blabi	white	abiad	أبيض	ʾabyaḍ	white
+blaci	glass	zujaj	زجاج	zujāj	glass
+blanu	blue	azrak	أزرق	ʾazraq	blue
 blanu	blue	samau	سماوي	samāwī	sky-blue
 bliku	block	kurma	قرمة	qurma	block
-bloti	boat	markab
-bloti	boat	zarak
+bloti	boat	markab	مركب	markab	boat
+bloti	boat	zarak	زورق	zauraq	boat
 bolci	ball	caki
-bolci	ball	kura
+bolci	ball	kura	كرة	kura	ball
 bongu	bone	adma
 botpi	bottle	kinin
 botpi	bottle	zujaj
