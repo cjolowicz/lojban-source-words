@@ -1,0 +1,313 @@
+#!/usr/bin/python
+
+# TODO
+# - cmavo list references
+# - comments
+# - reference comments
+# - references separated by semicolon or period
+# - reference comments with comma
+# - reference comments preceding reference with colon
+
+import codecs
+import sqlite3
+
+BROKEN_COMMENTS = [
+    ('[x3 sides/surfaces should include number, size, and shape; also polyhedron (= pitybli having flat/planar sides/surfaces)], regular polyhedron (= kubybli, blikubli), brick (= kitybli); (cf. tapla, kubli, tanbo, canlu, kojna, sefta, bolci, kurfa, tarmi)',
+     '[x3 sides/surfaces should include number, size, and shape; also polyhedron (= pitybli having flat/planar sides/surfaces), regular polyhedron (= kubybli, blikubli), brick (= kitybli)]; (cf. tapla, kubli, tanbo, canlu, kojna, sefta, bolci, kurfa, tarmi)'),
+
+    ('[also (adjective:) x1, x2, x4 is/are commercial (better expressed as ka canja, kamcanja)]; x2/x3 may be a specific object, a commodity (mass), an event (possibly service), or a property; pedantically, for objects/commodities, this is sumti-raising from ownership of the object/commodity (= posycanja for unambiguous semantics); (cf. dunda, friti, vecnu, zarci, jdini, pleji, jdima, jerna, kargu; see note at jdima on cost/price/value distinction, banxa, cirko, dunda, janta, kargu, prali, sfasa, zivle)',
+     '[also (adjective:) x1, x2, x4 is/are commercial (better expressed as ka canja, kamcanja); x2/x3 may be a specific object, a commodity (mass), an event (possibly service), or a property; pedantically, for objects/commodities, this is sumti-raising from ownership of the object/commodity (= posycanja for unambiguous semantics)]; (cf. dunda, friti, vecnu, zarci, jdini, pleji, jdima, jerna, kargu; see note at jdima on cost/price/value distinction, banxa, cirko, dunda, janta, kargu, prali, sfasa, zivle)')
+    ]
+
+def parseComment(comment):
+    for key, value in BROKEN_COMMENTS:
+        if comment == key:
+            comment = value
+
+    parens = []
+    part = ''
+    parts = []
+
+    for c in comment:
+        if c in '([':
+            parens.append(c)
+            if len(parens) != 1:
+                part += c
+        elif c == ')' and parens and parens[-1] == '(' or \
+             c == ']' and parens and parens[-1] == '[':
+            parens.pop()
+            if parens:
+                part += c
+                continue
+            part = part.strip()
+            parts.append(part)
+            part = ''
+        elif parens:
+            part += c
+
+    part = part.strip()
+    if part:
+        parts.append(part)
+
+    return parts
+
+class Table(object):
+    def __init__(self, connection, tablename, attributes):
+        self.connection = connection
+        self.tablename = tablename
+        self.attributes = attributes
+
+    def create(self):
+        self.cursor.execute('create table if not exists %s (%s)' % (
+                self.tablename,
+                ', '.join(['%s text' % attribute
+                           for attribute in self.attributes])))
+
+    def insert(self, fields):
+        names, values = [], []
+        for name, value in fields.iteritems():
+            if name in self.attributes:
+                names.append(name)
+                values.append(value)
+
+        sql = 'insert into %s (%s) values (%s)' % (
+            self.tablename,
+            ', '.join(names),
+            ', '.join(['?'] * len(values)))
+
+        self.cursor.execute(sql, tuple(values))
+
+    def commit(self):
+        self.connection.commit()
+
+class Loader(object):
+    def __init__(self, connection):
+        self.connection = connection
+
+    def open(self):
+        self.file = codecs.open(self.filename, 'r', 'utf-8')
+        self.cursor = self.connection.cursor()
+        self.createTable()
+
+    def load(self):
+        for fields in self.fields():
+            names, values = [], []
+            for name, value in fields.iteritems():
+                names.append(name)
+                values.append(value)
+
+            sql = 'insert into %s (%s) values (%s)' % (
+                self.tablename,
+                ', '.join(names),
+                ', '.join(['?'] * len(values)))
+
+            self.cursor.execute(sql, tuple(values))
+
+        self.connection.commit()
+
+    def close(self):
+        self.cursor.close()
+        self.file.close()
+
+    def createTable(self):
+        self.cursor.execute('create table if not exists %s (%s)' % (
+                self.tablename,
+                ', '.join(['%s text' % attribute
+                           for attribute in self.attributes])))
+        self.connection.commit()
+
+    def fields():
+        pass
+
+class TabLoader(Loader):
+    def fields(self):
+        for line in self.file:
+            yield dict(zip(self.attributes, map(unicode.strip,
+                                                line.split('\t'))))
+
+class OffsetLoader(Loader):
+    def fields(self):
+        for line in self.file:
+            fields = {}
+
+            for (attribute, (begin, end)) in self.offsets.iteritems():
+                if end == -1:
+                    fields[attribute] = line[begin:].strip()
+                else:
+                    fields[attribute] = line[begin:end].strip()
+
+            yield fields
+
+class GismuLoader(OffsetLoader):
+    filename = 'gismu.txt'
+    offsets = dict(gismu=(1, 7),
+                   cvc=(7, 11),
+                   ccv=(11, 15),
+                   cvv=(15, 20),
+                   keyword=(20, 41),
+                   hintword=(41, 62),
+                   definition=(62, 159),
+                   textbook=(159, 161),
+                   frequency=(161, 169),
+                   comment=(169, -1))
+
+    def open(self):
+        OffsetLoader.open(self)
+        # skip the first line
+        for line in self.file:
+            break
+
+    def fields(self):
+        for fields in OffsetLoader.fields(self):
+            if len(fields['gismu']) == 5:
+                yield fields
+
+class KeywordLoader(GismuLoader):
+    tablename = 'Keywords'
+    offsets = dict(gismu=GismuLoader.offsets['gismu'],
+                   keyword=GismuLoader.offsets['keyword'])
+    attributes = ['gismu', 'place', 'keyword']
+
+    def fields(self):
+        for fields in GismuLoader.fields(self):
+            fields['place'] = 1
+            yield fields
+
+class RafsiLoader(GismuLoader):
+    tablename = 'Rafsi'
+    offsets = dict(gismu=GismuLoader.offsets['gismu'],
+                   cvc=GismuLoader.offsets['cvc'],
+                   ccv=GismuLoader.offsets['ccv'],
+                   cvv=GismuLoader.offsets['cvv'])
+    attributes = ['gismu', 'rafsi']
+
+    def fields(self):
+        for fields in GismuLoader.fields(self):
+            for name in ['cvc', 'ccv', 'cvv']:
+                yield dict(gismu=fields['gismu'],
+                           rafsi=fields[name])
+
+class DefinitionLoader(GismuLoader):
+    tablename = 'Definition'
+    offsets = dict(gismu=GismuLoader.offsets['gismu'],
+                   hintword=GismuLoader.offsets['hintword'],
+                   definition=GismuLoader.offsets['definition'],
+                   comment=GismuLoader.offsets['comment'])
+    attributes = offsets.keys()
+
+class CrossreferencesLoader(GismuLoader):
+    tablename = 'Crossreferences'
+    offsets = dict(gismu=GismuLoader.offsets['gismu'],
+                   comment=GismuLoader.offsets['comment'])
+    attributes = ['gismu', 'reference']
+
+    def fields(self):
+        for fields in GismuLoader.fields(self):
+            parts = parseComment(fields['comment'])
+
+            xreflists = []
+            for part in parts:
+                if part.startswith('cf.'):
+                    xreflists.append(part[3:].strip().split(','))
+                elif part.startswith('cf'):
+                    xreflists.append(part[2:].strip().split(','))
+
+            if xreflists:
+                xrefs = xreflists.pop()
+                assert(not xreflists)
+                for xref in xrefs:
+                    yield dict(gismu=fields['gismu'], reference=xref.strip())
+
+class TextbookLoader(GismuLoader):
+    tablename = 'Textbook'
+    offsets = dict(gismu=GismuLoader.offsets['gismu'],
+                   textbook=GismuLoader.offsets['textbook'])
+    attributes = offsets.keys()
+
+class FrequencyLoader(GismuLoader):
+    tablename = 'Frequency'
+    offsets = dict(gismu=GismuLoader.offsets['gismu'],
+                   frequency=GismuLoader.offsets['frequency'])
+    attributes = offsets.keys()
+
+    def fields(self):
+        for fields in GismuLoader.fields(self):
+            yield dict(gismu=fields['gismu'],
+                       frequency=int(fields['frequency']))
+
+class ObliqueKeywordsLoader(Loader):
+    tablename = 'Keywords'
+    filename = 'oblique_keywords.txt'
+    attributes = ['gismu', 'place', 'keyword']
+
+    def fields(self):
+        for line in self.file:
+            temp, keywords = line.split(';', 1)
+
+            # skip cmavo
+            if len(temp) != 6:
+                continue
+
+            gismu, place, keywords = temp[:5], int(temp[5]), keywords.split(';')
+
+            for keyword in keywords:
+                yield dict(zip(self.attributes, (gismu, place, keyword.strip())))
+
+class ArabicLoader(TabLoader):
+    tablename = 'Arabic'
+    filename = 'lojban-source-words_ar.txt'
+    attributes = ['gismu', 'keyword', 'lojbanisation', 'sourceword',
+                  'transcription', 'translation', 'comment']
+
+class ChineseLoader(TabLoader):
+    tablename = 'Chinese'
+    filename = 'lojban-source-words_zh.txt'
+    attributes = ['gismu', 'keyword', 'lojbanisation', 'sourceword',
+                  'sourceword2', 'transcription', 'translation', 'comment']
+
+class EnglishLoader(TabLoader):
+    tablename = 'English'
+    filename = 'lojban-source-words_en.txt'
+    attributes = ['gismu', 'keyword', 'lojbanisation', 'sourceword',
+                  'comment']
+
+class HindiLoader(TabLoader):
+    tablename = 'Hindi'
+    filename = 'lojban-source-words_hi.txt'
+    attributes = ['gismu', 'keyword', 'lojbanisation', 'sourceword',
+                  'transcription', 'translation', 'class', 'comment']
+
+class RussianLoader(TabLoader):
+    tablename = 'Russian'
+    filename = 'lojban-source-words_ru.txt'
+    attributes = ['gismu', 'keyword', 'lojbanisation', 'sourceword',
+                  'transcription', 'translation', 'comment']
+
+class SpanishLoader(TabLoader):
+    tablename = 'Spanish'
+    filename = 'lojban-source-words_es.txt'
+    attributes = ['gismu', 'keyword', 'lojbanisation', 'sourceword',
+                  'translation', 'comment']
+
+def main(filename):
+    connection = sqlite3.connect(filename)
+
+    for klass in [KeywordLoader, RafsiLoader, DefinitionLoader,
+                  TextbookLoader, FrequencyLoader, CrossreferencesLoader,
+                  ObliqueKeywordsLoader,
+                  ArabicLoader, ChineseLoader, EnglishLoader,
+                  HindiLoader, RussianLoader, SpanishLoader]:
+        loader = klass(connection)
+
+        print 'Loading %s ...' % loader.tablename
+
+        loader.open()
+        loader.load()
+        loader.close()
+
+if __name__ == '__main__':
+    import sys
+    if len(sys.argv) >= 2:
+        main(sys.argv[1])
+    else:
+        main('dictionary.sql')

@@ -1,0 +1,489 @@
+#!/usr/bin/python
+
+# TODO
+# - scores
+# - cmavo list references
+# - comments
+# - reference comments
+# - references separated by semicolon or period
+# - reference comments with comma
+# - reference comments preceding reference with colon
+
+import sys
+import codecs
+import sqlite3
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+BROKEN_COMMENTS = [
+    ('[x3 sides/surfaces should include number, size, and shape; also polyhedron (= pitybli having flat/planar sides/surfaces)], regular polyhedron (= kubybli, blikubli), brick (= kitybli); (cf. tapla, kubli, tanbo, canlu, kojna, sefta, bolci, kurfa, tarmi)',
+     '[x3 sides/surfaces should include number, size, and shape; also polyhedron (= pitybli having flat/planar sides/surfaces), regular polyhedron (= kubybli, blikubli), brick (= kitybli)]; (cf. tapla, kubli, tanbo, canlu, kojna, sefta, bolci, kurfa, tarmi)'),
+
+    ('[also (adjective:) x1, x2, x4 is/are commercial (better expressed as ka canja, kamcanja)]; x2/x3 may be a specific object, a commodity (mass), an event (possibly service), or a property; pedantically, for objects/commodities, this is sumti-raising from ownership of the object/commodity (= posycanja for unambiguous semantics); (cf. dunda, friti, vecnu, zarci, jdini, pleji, jdima, jerna, kargu; see note at jdima on cost/price/value distinction, banxa, cirko, dunda, janta, kargu, prali, sfasa, zivle)',
+     '[also (adjective:) x1, x2, x4 is/are commercial (better expressed as ka canja, kamcanja); x2/x3 may be a specific object, a commodity (mass), an event (possibly service), or a property; pedantically, for objects/commodities, this is sumti-raising from ownership of the object/commodity (= posycanja for unambiguous semantics)]; (cf. dunda, friti, vecnu, zarci, jdini, pleji, jdima, jerna, kargu; see note at jdima on cost/price/value distinction, banxa, cirko, dunda, janta, kargu, prali, sfasa, zivle)')
+    ]
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class File(object):
+    def __init__(self, filename):
+        self.filename = filename
+
+    def open(self):
+        self.file = codecs.open(self.filename, 'r', 'utf-8')
+
+    def load(self):
+        for line in self.file:
+            for fields in self.process(line):
+                yield fields
+
+    def process(self, line):
+        pass
+
+    def close(self):
+        self.file.close()
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class TabFile(File):
+    def __init__(self, filename, attributes):
+        super(TabFile, self).__init__(filename)
+        self.attributes = attributes
+
+    def process(self, line):
+        yield dict(zip(self.attributes,
+                       map(unicode.strip,
+                           line.split('\t'))))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class OffsetFile(File):
+    def __init__(self, filename, offsets):
+        super(OffsetFile, self).__init__(filename)
+        self.offsets = offsets
+
+    def process(self, line):
+        fields = {}
+
+        for (attribute, (begin, end)) in self.offsets.iteritems():
+            if end == -1:
+                fields[attribute] = line[begin:].strip()
+            else:
+                fields[attribute] = line[begin:end].strip()
+
+        yield fields
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class ObliqueKeywordsFile(File):
+    def __init__(self):
+        super(ObliqueKeywordsFile, self).__init__(
+            'oblique_keywords.txt')
+
+    def process(self, line):
+        temp, keywords = line.split(';', 1)
+
+        # skip cmavo
+        if len(temp) != 6:
+            return
+
+        for keyword in keywords.split(';'):
+            yield dict(gismu=temp[:5],
+                       place=int(temp[5]),
+                       keyword=keyword.strip())
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class GismuFile(OffsetFile):
+    def __init__(self):
+        super(GismuFile, self).__init__(
+            'gismu.txt',
+            dict(gismu=(1, 7),
+                 cvc=(7, 11),
+                 ccv=(11, 15),
+                 cvv=(15, 20),
+                 keyword=(20, 41),
+                 hintword=(41, 62),
+                 definition=(62, 159),
+                 textbook=(159, 161),
+                 frequency=(161, 169),
+                 comment=(169, -1)))
+
+    def open(self):
+        super(GismuFile, self).open()
+        # skip the first line
+        for line in self.file:
+            break
+
+    def process(self, line):
+        for fields in super(GismuFile, self).process(line):
+            # skip cmavo
+            if len(fields['gismu']) != 5:
+                continue
+
+            yield self.parse(fields)
+
+    def parse(self, fields):
+        comment = fields.pop('comment')
+        fields['comments'] = []
+        fields['xrefs'] = []
+
+        comments = self.splitComment(comment)
+
+        xreflists = []
+        for part in comments:
+            if part.startswith('cf.'):
+                xreflists.append(part[3:].strip().split(','))
+            elif part.startswith('cf'):
+                xreflists.append(part[2:].strip().split(','))
+            else:
+                fields['comments'].append(part.strip())
+
+        if xreflists:
+            xrefs = xreflists.pop()
+            assert(not xreflists)
+            for xref in xrefs:
+                fields['xrefs'].append(xref.strip())
+
+        return fields
+
+    def splitComment(self, comment):
+        comment = self.fixComment(comment)
+
+        parens = []
+        part = ''
+        parts = []
+
+        for c in comment:
+            if c in '([':
+                parens.append(c)
+                if len(parens) != 1:
+                    part += c
+            elif c == ')' and parens and parens[-1] == '(' or \
+                 c == ']' and parens and parens[-1] == '[':
+                parens.pop()
+                if parens:
+                    part += c
+                    continue
+                part = part.strip()
+                parts.append(part)
+                part = ''
+            elif parens:
+                part += c
+
+        part = part.strip()
+        if part:
+            parts.append(part)
+
+        return parts
+
+    def fixComment(self, comment):
+        for key, value in BROKEN_COMMENTS:
+            if comment == key:
+                return value
+        return comment
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class Table(object):
+    def __init__(self, connection, tablename, attributes):
+        self.connection = connection
+        self.tablename = tablename
+        self.attributes = attributes
+
+    def open(self):
+        self.cursor = self.connection.cursor()
+
+    def create(self):
+        self.cursor.execute('create table if not exists %s (%s)' % (
+                self.tablename,
+                ', '.join(['%s text' % attribute
+                           for attribute in self.attributes])))
+
+    def insert(self, fields):
+        names, values = [], []
+        for name, value in fields.iteritems():
+            if name in self.attributes:
+                names.append(name)
+                values.append(value)
+
+        sql = 'insert into %s (%s) values (%s)' % (
+            self.tablename,
+            ', '.join(names),
+            ', '.join(['?'] * len(values)))
+
+        self.cursor.execute(sql, tuple(values))
+
+    def commit(self):
+        self.connection.commit()
+
+    def close(self):
+        self.cursor.close()
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class SimpleGismuTable(Table):
+    def __init__(self, connection, tablename, attributes):
+        super(SimpleGismuTable, self).__init__(
+            connection,
+            tablename,
+            attributes)
+
+    def insert(self, fields):
+        super(SimpleGismuTable, self).insert(
+            dict((key, value)
+                 for key, value in fields.iteritems()
+                 if key in self.attributes))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class DefinitionTable(SimpleGismuTable):
+    def __init__(self, connection):
+        super(DefinitionTable, self).__init__(
+            connection,
+            'Definition',
+            ['gismu', 'hintword', 'definition'])
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class TextbookTable(SimpleGismuTable):
+    def __init__(self, connection):
+        super(TextbookTable, self).__init__(
+            connection,
+            'Textbook',
+            ['gismu', 'textbook'])
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class FrequencyTable(SimpleGismuTable):
+    def __init__(self, connection):
+        super(FrequencyTable, self).__init__(
+            connection,
+            'Frequency',
+            ['gismu', 'frequency'])
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class RafsiTable(Table):
+    def __init__(self, connection):
+        super(RafsiTable, self).__init__(
+            connection,
+            'Rafsi',
+            ['gismu', 'rafsi'])
+
+    def insert(self, fields):
+        for name in ['cvc', 'ccv', 'cvv']:
+            super(RafsiTable, self).insert(
+                dict(gismu=fields['gismu'],
+                     rafsi=fields[name]))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class KeywordTable(Table):
+    def __init__(self, connection):
+        super(KeywordTable, self).__init__(
+            connection,
+            'Keywords',
+            ['gismu', 'place', 'keyword'])
+
+    def insert(self, fields):
+        super(KeywordTable, self).insert(
+            dict(gismu=fields['gismu'],
+                 place=1,
+                 keyword=fields['keyword']))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class XrefsTable(Table):
+    def __init__(self, connection):
+        super(XrefsTable, self).__init__(
+            connection,
+            'Xrefs',
+            ['gismu', 'xref'])
+
+    def insert(self, fields):
+        for xref in fields['xrefs']:
+            super(XrefsTable, self).insert(
+                dict(gismu=fields['gismu'],
+                     xref=xref))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class CommentsTable(Table):
+    def __init__(self, connection):
+        super(CommentsTable, self).__init__(
+            connection,
+            'Comments',
+            ['gismu', 'comment'])
+
+    def insert(self, fields):
+        for comment in fields['comments']:
+            super(CommentsTable, self).insert(
+                dict(gismu=fields['gismu'],
+                     comment=comment))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class Loader(object):
+    def __init__(self, file, *tables):
+        self.file = file
+        self.tables = tables
+
+    def open(self):
+        self.file.open()
+        for table in self.tables:
+            table.open()
+
+    def load(self):
+        for table in self.tables:
+            table.create()
+            table.commit()
+
+        for fields in self.file.load():
+            for table in self.tables:
+                table.insert(fields)
+
+        for table in self.tables:
+            table.commit()
+
+    def close(self):
+        self.file.close()
+        for table in self.tables:
+            table.close()
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class TabLoader(Loader):
+    def __init__(self, filename, *tables):
+        super(TabLoader, self).__init__(
+            TabFile(filename, [attribute
+                               for table in tables
+                               for attribute in table.attributes]),
+            *tables)
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class ObliqueKeywordsLoader(Loader):
+    def __init__(self, connection):
+        super(ObliqueKeywordsLoader, self).__init__(
+            ObliqueKeywordsFile(),
+            Table(
+                connection,
+                'Keywords',
+                ['gismu', 'place', 'keyword']))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class ArabicLoader(TabLoader):
+    def __init__(self, connection):
+        super(ArabicLoader, self).__init__(
+            'lojban-source-words_ar.txt',
+            Table(
+                connection,
+                'Arabic',
+                ['gismu', 'keyword', 'lojbanisation', 'sourceword',
+                 'transcription', 'translation', 'comment']))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class ChineseLoader(TabLoader):
+    def __init__(self, connection):
+        super(ChineseLoader, self).__init__(
+            'lojban-source-words_zh.txt',
+            Table(
+                connection,
+                'Chinese',
+                ['gismu', 'keyword', 'lojbanisation', 'sourceword',
+                 'sourceword2', 'transcription', 'translation', 'comment']))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class EnglishLoader(TabLoader):
+    def __init__(self, connection):
+        super(EnglishLoader, self).__init__(
+            'lojban-source-words_en.txt',
+            Table(
+                connection,
+                'English',
+                ['gismu', 'keyword', 'lojbanisation', 'sourceword',
+                 'comment']))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class HindiLoader(TabLoader):
+    def __init__(self, connection):
+        super(HindiLoader, self).__init__(
+            'lojban-source-words_hi.txt',
+            Table(
+                connection,
+                'Hindi',
+                ['gismu', 'keyword', 'lojbanisation', 'sourceword',
+                 'transcription', 'translation', 'class', 'comment']))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class RussianLoader(TabLoader):
+    def __init__(self, connection):
+        super(RussianLoader, self).__init__(
+            'lojban-source-words_ru.txt',
+            Table(
+                connection,
+                'Russian',
+                ['gismu', 'keyword', 'lojbanisation', 'sourceword',
+                 'transcription', 'translation', 'comment']))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class SpanishLoader(TabLoader):
+    def __init__(self, connection):
+        super(SpanishLoader, self).__init__(
+            'lojban-source-words_es.txt',
+            Table(
+                connection,
+                'Spanish',
+                ['gismu', 'keyword', 'lojbanisation', 'sourceword',
+                 'translation', 'comment']))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+class GismuLoader(Loader):
+    def __init__(self, connection):
+        super(GismuLoader, self).__init__(
+            GismuFile(),
+            DefinitionTable(connection),
+            TextbookTable(connection),
+            FrequencyTable(connection),
+            RafsiTable(connection),
+            KeywordTable(connection),
+            XrefsTable(connection),
+            CommentsTable(connection))
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+def main(filename):
+    connection = sqlite3.connect(filename)
+
+    loaders = [
+        GismuLoader(connection),
+        ObliqueKeywordsLoader(connection),
+        ArabicLoader(connection),
+        ChineseLoader(connection),
+        EnglishLoader(connection),
+        HindiLoader(connection),
+        RussianLoader(connection),
+        SpanishLoader(connection)]
+
+    for loader in loaders:
+        print 'Loading %s ...' % loader.file.filename
+
+        loader.open()
+        loader.load()
+        loader.close()
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+if __name__ == '__main__':
+    if len(sys.argv) >= 2:
+        main(sys.argv[1])
+    else:
+        main('dictionary.sql')

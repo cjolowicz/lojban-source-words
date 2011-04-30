@@ -1,0 +1,22 @@
+* Output format.
+  * Output format HTML (dictionary).
+    * False positives for lujvo markup.
+    * Handle references to specific places.
+    * Include wikipedia pictures.
+    * Links to the complete language reference and the tutorial.
+    * Fix overlapping margin notes.
+  * Output format HTML (thesaurus).
+  * Output format HTML (formatted reference tables).
+  * Output format PDF (print dictionary).
+  * Output format dictd (dictionary server).
+* Write Makefile.
+* Finish Arabic.
+* Improve gismu file parser.
+* Generate XML.
+* Load data.
+  * cmavo list references
+  * comments
+  * reference comments
+  * references separated by semicolon or period
+  * reference comments with comma
+  * reference comments preceding reference with colon
