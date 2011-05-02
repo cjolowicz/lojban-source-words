@@ -68,18 +68,18 @@ bloti	boat	markab	مركب	markab	boat
 bloti	boat	zarak	زورق	zauraq	boat
 bolci	ball	caki
 bolci	ball	kura	كرة	kura	ball
-bongu	bone	adma
-botpi	bottle	kinin
-botpi	bottle	zujaj
-boxfo	sheet	laux
-boxfo	sheet	safix
+bongu	bone	adma	عظم	ʿaẓm	bone	correct transcription ``adm''
+botpi	bottle	kinin	قنينة	qinīna	bottle
+botpi	bottle	zujaj	زجاجة	zujāja	bottle
+boxfo	sheet	laux	لوح	lauḥ	board
+boxfo	sheet	safix	صفيح	ṣafīḥ	sheet
 boxfo	sheet	saxfa	صفحة	ṣafḥa	leaf	FIXIT dubious; correct transcription ``safxa''
-boxfo	sheet	uarak
-boxna	wave	mauaj
-boxna	wave	mauj
+boxfo	sheet	uarak	ورقة	waraqa	leaf
+boxna	wave	mauaj	موجة	mauja	wave	correct transcription ``mauja''
+boxna	wave	mauj	موج	mauj	waves
 bradi	enemy	adu	عدو	ʿaduw	enemy
 bratu	hail	barad	برد	barad	hail
-bredi	ready	mustaid
+bredi	ready	mustaid	مسيعد	mustaʿidd	ready
 bredi	ready	mutaxib
 bridi	predicate	musnad
 brife	breeze	nasim
