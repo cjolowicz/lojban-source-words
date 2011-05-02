@@ -1,4 +1,4 @@
-#!/usr/bin/python2.5
+#!/usr/bin/python
 
 from version import VERSION
 from gismu import GismuFactory
