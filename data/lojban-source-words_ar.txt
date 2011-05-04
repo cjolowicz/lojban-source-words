@@ -25,7 +25,7 @@ bargu	arch	dira	ذراع	dirāʿ	arm
 bargu	arch	kaus	قوس	qaus	arch
 barja	bar	bar	بار	bār	bar
 barna	mark	atar	أثر	ʾaṯar	trace
-bartu	out	xarij	خارج	ẖārij	outside
+bartu	out	xarij	خارج	ḫārij	outside
 basna	emphasize	nabara	نبر	nabara	emphasize
 basti	replace	badal	بدل	badal	replacement
 batci	bite	kasam	قرم	qaram	gnaw	correct transcription ``karam''
@@ -41,11 +41,11 @@ bersa	son	najl	نجل	najl	descendant
 berti	north	camal	شمال	šamāl	north
 berti	north	cimal	شمال	šimāl	north
 besna	brain	dimag	دماغ	dimāġ	brain
-besna	brain	muj	مخ	muẖẖ	brain	correct transcription ``muxx''
+besna	brain	muj	مخ	muḫḫ	brain	correct transcription ``muxx''
 betfu	abdomen	batn	بطن	baṭn	belly
 betri	tragedy	trajidi	تراجيديا	trājīdīā	tragedy
 bevri	carry	xamal	حمل	ḥamal	carry
-bidju	bead	xaraz	خرز	ẖaraz	beads
+bidju	bead	xaraz	خرز	ḫaraz	beads
 bifce	bee	naxla	نحلة	naḥla	bee
 bikla	whip	kirbaj	كرباج	kurbāj	whip	correct transcription ``kurbaj''
 bikla	whip	saut	سوط	sauṭ	whip
@@ -58,7 +58,7 @@ birje	beer	bir	بيرة	bīra	beer
 birka	arm	dira	ذراع	dirāʿ	arm
 birti	certain	tabit	ثابت	ṯābit	certain
 bisli	ice	jalid	جليد	jalīd	ice
-bitmu	wall	xait	حايط	ẖāīṭ	wall
+bitmu	wall	xait	حايط	ḫāīṭ	wall
 blabi	white	abiad	أبيض	ʾabyaḍ	white
 blaci	glass	zujaj	زجاج	zujāj	glass
 blanu	blue	azrak	أزرق	ʾazraq	blue
@@ -85,22 +85,22 @@ bridi	predicate	musnad	مسند	musnad	predicate
 brife	breeze	nasim	نسيم	nasīm	breeze
 briju	office	dair	دير	dair	monastery
 briju	office	maktab	مكتب	maktab	office
-bruna	brother	ax	أخ	ʾaẖ	brother
+bruna	brother	ax	أخ	ʾaḫ	brother
 bukpu	cloth	kumac	قماش	qumāš	cloth
-bumru	fog	cabur
-bunda	pound	baund
-bunre	brown	asmar
-burcu	brush	furca
-burna	embarrassed	muxraj
-cabna	now	alan
-cabna	now	mutauakit
-cabra	apparatus	jixaz
-cacra	hour	saa
-cadzu	walk	maca
-cafne	often	katir
-cakla	chocolate	cukulat
-calku	shell	kicra
-calku	shell	sadafa
+bumru	fog	cabur	شبورة	šabūra	mist
+bunda	pound	baund	باوند	bāūnd	pound
+bunre	brown	asmar	أسمر	ʾasmar	brown
+burcu	brush	furca	فرشة	furša	brush
+burna	embarrassed	muxraj	محرج	muḥraj	embarrassed
+cabna	now	alan	اﻵن	alʾān	now
+cabna	now	mutauakit	متواقت	mutawāqit	synchronous
+cabra	apparatus	jixaz	جهاز	jihāz	apparatus
+cacra	hour	saa	ساعة	sāʿa	hour
+cadzu	walk	maca	مشى	mašā	walk
+cafne	often	katir	كثير	kaṯīr	many	cf. كثيرا [kaṯīran] ``much''
+cakla	chocolate	cukulat	شكولاتة	šukūlāta	chocolate
+calku	shell	kicra	قشرة	qišra	shell
+calku	shell	sadafa	صدفة	ṣadafa	sea shell
 canci	vanish	gaba
 canci	vanish	ixtafa
 canci	vanish	tauara
