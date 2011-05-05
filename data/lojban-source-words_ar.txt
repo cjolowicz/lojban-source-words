@@ -4,7 +4,7 @@ badri	sad	xazin	حزين	ḥazīn	sad
 bajra	run	jara	جرى	jarā	run
 bakfu	bundle	rabat	ربط	rabaṭ	bind	cf. ربطة [rabṭa] ``bundle''
 bakni	bovine	bakar	بقرة	baqara	cow
-bakri	chalk	tabacir	ظباشير	tabāšīr	chalk
+bakri	chalk	tabacir	طباشير	ṭabāšīr	chalk
 baktu	bucket	dal	دلو	dalw	bucket	correct transcription ``dalu''
 baktu	bucket	satl	سطل	saṭl	bucket
 balji	bulb	basal	بصلة	baṣala	bulb
@@ -101,22 +101,22 @@ cafne	often	katir	كثير	kaṯīr	many	cf. كثيرا [kaṯīran] ``much''
 cakla	chocolate	cukulat	شكولاتة	šukūlāta	chocolate
 calku	shell	kicra	قشرة	qišra	shell
 calku	shell	sadafa	صدفة	ṣadafa	sea shell
-canci	vanish	gaba
-canci	vanish	ixtafa
-canci	vanish	tauara
-cando	idle	kaslan
-cange	farm	falax
-cange	farm	zaraa
-canja	exchange	tajar
-canko	window	cubak
-canlu	space	makan
-canpa	shovel	mijrafa
-canre	sand	raml
-canti	gut	axca
-carce	cart	arab
-carmi	intense	lami
-carna	turn	adar
-cartu	chart	xarit
+canci	vanish	gaba	غاب	ġāba	vanish
+canci	vanish	ixtafa	اختفى	iḫtafā	vanish
+canci	vanish	tauara	توارى	tawārā	disappear
+cando	idle	kaslan	كسلان	kaslān	idle
+cange	farm	falax	فلح	falaḥ	cultivate
+cange	farm	zaraa	زرع	zaraʿa	grow
+canja	exchange	tajar	تجر	tajar	trade
+canko	window	cubak	شباك	šubbāk	window
+canlu	space	makan	وكان	makān	space
+canpa	shovel	mijrafa	وجرفة	mijrafa	shovel
+canre	sand	raml	رمل	raml	sand
+canti	gut	axca	أحشاء	ʾaḥšāʾ	bowels
+carce	cart	arab	عربة	ʿaraba	cart
+carmi	intense	lami	لامع	lāmiʿ	bright
+carna	turn	adar	أدار	ʾadār	turn
+cartu	chart	xarit	خريطة	ḫarīṭa	map
 carvi	rain	matar
 casnu	discuss	baxat
 casnu	discuss	nakac
