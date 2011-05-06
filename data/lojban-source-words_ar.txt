@@ -21,7 +21,7 @@ banxa	bank	bank	بنك	bank	bank
 banzu	suffice	kaf	كفى	kafā	suffice
 bapli	force	ajbar	أخبر	ʾajbara	compell
 barda	big	kabir	كبير	kabīr	big
-bargu	arch	dira	ذراع	dirāʿ	arm
+bargu	arch	dira	ذراع	ḏirāʿ	arm
 bargu	arch	kaus	قوس	qaus	arch
 barja	bar	bar	بار	bār	bar
 barna	mark	atar	أثر	ʾaṯar	trace
@@ -55,7 +55,7 @@ bilni	military	askari	عسكرى	askarī	military
 binra	insure	tamin	تامين	tāmīn	insurance
 binxo	become	inkalab	انقلب	inqalab	change
 birje	beer	bir	بيرة	bīra	beer
-birka	arm	dira	ذراع	dirāʿ	arm
+birka	arm	dira	ذراع	ḏirāʿ	arm
 birti	certain	tabit	ثابت	ṯābit	certain
 bisli	ice	jalid	جليد	jalīd	ice
 bitmu	wall	xait	حايط	ḫāīṭ	wall
@@ -117,23 +117,23 @@ carce	cart	arab	عربة	ʿaraba	cart
 carmi	intense	lami	لامع	lāmiʿ	bright
 carna	turn	adar	أدار	ʾadār	turn
 cartu	chart	xarit	خريطة	ḫarīṭa	map
-carvi	rain	matar
-casnu	discuss	baxat
-casnu	discuss	nakac
-catke	shove	dagat
-catlu	look	tatala
-catni	authority	sulta
-catni	authority	tafuid
-catra	kill	katal
-caxno	shallow	daxl
-cecla	launcher	istada
-cecla	launcher	kadafa
-cecmu	community	jama
-cecmu	community	jamai
-cedra	era	asar
-cedra	era	axd
-cenba	vary	gaiar
-cenba	vary	xaual
+carvi	rain	matar	مطر	maṭar	rain
+casnu	discuss	baxat	بحث	baḥaṯ	discuss
+casnu	discuss	nakac	ناقش	nāqaš	discuss
+catke	shove	dagat	ضغط	ḍaġaṭ	push
+catlu	look	tatala				FIXIT missing
+catni	authority	sulta	سلطة	sulṭa	authority
+catni	authority	tafuid	نفوذ	nufūḏ	influence	FIXIT dubious; correct transcription ``nufud''
+catra	kill	katal	قتل	qatal	kill
+caxno	shallow	daxl	ضحل	ḍaḥl	shallow
+cecla	launcher	istada	اصطاد	iṣṭād	shoot
+cecla	launcher	kadafa	قذف	qaḏaf	throw
+cecmu	community	jama	جمع	jamʿa	assemble
+cecmu	community	jamai	جمعية	jamʿīya	community	correct transcription ``jamia''
+cedra	era	asar	عصر	ʿaṣr	era
+cedra	era	axd	عهد	ʿahd	era
+cenba	vary	gaiar	غير	ġaiyār	change
+cenba	vary	xaual	حول	ḥauwal	change
 censa	holy	kudisa
 cerda	heir	uarit
 cerni	morning	sabax
