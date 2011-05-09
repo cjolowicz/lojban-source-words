@@ -134,24 +134,24 @@ cedra	era	asar	عصر	ʿaṣr	era
 cedra	era	axd	عهد	ʿahd	era
 cenba	vary	gaiar	غير	ġaiyār	change
 cenba	vary	xaual	حول	ḥauwal	change
-censa	holy	kudisa
-cerda	heir	uarit
-cerni	morning	sabax
-certu	expert	maxir
-certu	expert	taka
-cevni	god	ala
-cfari	initiate	cara
-cfika	fiction	xaiali
-cfila	flaw	jalal
-cfine	wedge	isfin
-cfipu	confuse	adxal
-cfipu	confuse	balbal
-cfipu	confuse	cauac
-cfipu	confuse	rabak
-cfipu	confuse	xaiar
-ciblu	blood	dam
-cicna	cyan	
-cidja	food	gida
+censa	holy	kudisa	قدسي	qudsī	holy	FIXIT dubious; correct transcription ``kudsi''
+cerda	heir	uarit	وارث	wāriṯ	heir
+cerni	morning	sabax	صباح	ṣabāḥ	morning
+certu	expert	maxir				FIXIT missing
+certu	expert	taka				FIXIT missing
+cevni	god	ala	الله	allāh	god
+cfari	initiate	cara				FIXIT missing
+cfika	fiction	xaiali	خيالي	ḫayālī	fictitious
+cfila	flaw	jalal	خلل	ḫalal	flaw	correct transcription ``xalal''
+cfine	wedge	isfin	إسفين	ʾisfīn	wedge
+cfipu	confuse	adxal				FIXIT missing
+cfipu	confuse	balbal	بلبل	balbal	confuse
+cfipu	confuse	cauac	شوش	šawwaš	confuse
+cfipu	confuse	rabak	ربك	rabak	confuse
+cfipu	confuse	xaiar	حير	ḥaiyar	confuse
+ciblu	blood	dam	دم	dam	blood
+cicna	cyan					missing
+cidja	food	gida	غذاء	ġiḏāʾ	food
 cidni	knee	rukba
 cidro	hydrogen	xaidrojin
 cifnu	infant	tifl
